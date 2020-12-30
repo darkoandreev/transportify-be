@@ -1,0 +1,72 @@
+package com.tusofia.transportify.transport.drive.service;
+
+import com.tusofia.transportify.google.distance.DistanceService;
+import com.tusofia.transportify.transport.drive.dto.DriveTransportDto;
+import com.tusofia.transportify.transport.drive.entity.DriveTransportEntity;
+import com.tusofia.transportify.transport.drive.repository.IDriveTransportRepository;
+import com.tusofia.transportify.transport.drive.request.DriverTransportMappedParams;
+import com.tusofia.transportify.transport.validation.ValidationService;
+import com.tusofia.transportify.user.entity.User;
+import com.tusofia.transportify.user.service.UserService;
+import com.tusofia.transportify.util.CustomMapper;
+import com.tusofia.transportify.vehicle.entity.VehicleEntity;
+import com.tusofia.transportify.vehicle.service.VehicleService;
+import javassist.NotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.List;
+
+@Service
+public class DriveTransportService {
+
+  @Autowired
+  private IDriveTransportRepository driveTransportRepository;
+
+  @Autowired
+  private VehicleService vehicleService;
+
+  @Autowired
+  private UserService userService;
+
+  @Autowired
+  private DistanceService distanceService;
+
+  @Autowired
+  private ValidationService validationService;
+
+  @Autowired
+  private CustomMapper customMapper;
+
+  public DriveTransportEntity persist(DriveTransportDto driveTransportDto, Long userId) throws NotFoundException {
+    this.validationService.validateTransport(driveTransportDto.getTransportDate(), userId);
+
+    VehicleEntity vehicleEntity = this.vehicleService.getVehicleById(driveTransportDto.getVehicleId());
+    User user = this.userService.findUserById(userId);
+    String distance = this.distanceService.getDistanceResult(driveTransportDto.getCityFrom(), driveTransportDto.getCityTo());
+    driveTransportDto.setDistance(distance);
+    driveTransportDto.setVehicle(vehicleEntity);
+    driveTransportDto.setUser(user);
+
+    return this.driveTransportRepository.save(this.customMapper.toDriveTransportEntity(driveTransportDto));
+  }
+
+  public List<DriveTransportEntity> getMappedDriveTransports(DriverTransportMappedParams params) {
+    return this.driveTransportRepository
+            .findAllByCityFromAndCityToAndTransportDate(params.getCityFrom(), params.getCityTo(), params.getTransportDate());
+  }
+
+  public List<DriveTransportEntity> findAllDriveTransportsByUserId(Long userId) {
+    return this.driveTransportRepository.findAllByUserId(userId);
+  }
+
+  public DriveTransportEntity findById(Long driveTransportId) throws NotFoundException {
+    return this.driveTransportRepository.findById(driveTransportId)
+            .orElseThrow(() -> new NotFoundException("Drive transport not found"));
+  }
+
+  public int countDriveTransports(Date date, Long userId) {
+    return this.driveTransportRepository.countByTransportDateAndUserId(date, userId);
+  }
+}
