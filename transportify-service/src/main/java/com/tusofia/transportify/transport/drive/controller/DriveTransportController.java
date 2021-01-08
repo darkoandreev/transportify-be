@@ -5,15 +5,12 @@ import com.tusofia.transportify.transport.drive.entity.DriveTransportEntity;
 import com.tusofia.transportify.transport.drive.request.DriverTransportMappedParams;
 import com.tusofia.transportify.transport.drive.service.DriveTransportService;
 import javassist.NotFoundException;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.sql.Date;
 import java.util.List;
 
 @RestController
@@ -36,8 +33,18 @@ public class DriveTransportController {
     return new ResponseEntity<>(this.driveTransportService.findAllDriveTransportsByUserId(userId), HttpStatus.OK);
   }
 
-  @GetMapping("/mapped")
-  public ResponseEntity<List<DriveTransportEntity>> getMappedDriveTransports(@Valid DriverTransportMappedParams params) {
-    return new ResponseEntity<>(this.driveTransportService.getMappedDriveTransports(params), HttpStatus.OK);
+  @GetMapping("/{driveTransportId}")
+  public ResponseEntity<DriveTransportEntity> getById(@PathVariable Long driveTransportId) throws NotFoundException {
+    return new ResponseEntity<>(this.driveTransportService.findById(driveTransportId), HttpStatus.OK);
+  }
+
+  @GetMapping("/search")
+  public ResponseEntity<List<DriveTransportEntity>> searchDriveTransports(@Valid DriverTransportMappedParams params) {
+    return new ResponseEntity<>(this.driveTransportService.searchDriveTransports(params), HttpStatus.OK);
+  }
+
+  @DeleteMapping("{driveTransportId}")
+  public ResponseEntity<DriveTransportEntity> deleteById(@PathVariable Long driveTransportId) throws NotFoundException {
+    return new ResponseEntity<>(this.driveTransportService.deleteById(driveTransportId), HttpStatus.OK);
   }
 }

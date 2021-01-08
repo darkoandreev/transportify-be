@@ -1,10 +1,12 @@
 package com.tusofia.transportify.transport.drive.service;
 
 import com.tusofia.transportify.google.distance.DistanceService;
+import com.tusofia.transportify.transport.applicant.dto.ApplicantDto;
 import com.tusofia.transportify.transport.drive.dto.DriveTransportDto;
 import com.tusofia.transportify.transport.drive.entity.DriveTransportEntity;
 import com.tusofia.transportify.transport.drive.repository.IDriveTransportRepository;
 import com.tusofia.transportify.transport.drive.request.DriverTransportMappedParams;
+import com.tusofia.transportify.transport.ride.service.RideTransportService;
 import com.tusofia.transportify.transport.validation.ValidationService;
 import com.tusofia.transportify.user.entity.User;
 import com.tusofia.transportify.user.service.UserService;
@@ -52,9 +54,15 @@ public class DriveTransportService {
     return this.driveTransportRepository.save(this.customMapper.toDriveTransportEntity(driveTransportDto));
   }
 
-  public List<DriveTransportEntity> getMappedDriveTransports(DriverTransportMappedParams params) {
+  public List<DriveTransportEntity> searchDriveTransports(DriverTransportMappedParams params) {
     return this.driveTransportRepository
-            .findAllByCityFromAndCityToAndTransportDate(params.getCityFrom(), params.getCityTo(), params.getTransportDate());
+            .findAllByCityFromAndCityToAndTransportDateAndAvailableSeatsGreaterThanEqual(params.getCityFrom(), params.getCityTo(), params.getTransportDate(), 1);
+  }
+
+  public DriveTransportEntity reduceAvailableSeats(Long driveTransportId) throws NotFoundException {
+    DriveTransportEntity driveTransportEntity = this.findById(driveTransportId);
+    driveTransportEntity.setAvailableSeats(driveTransportEntity.getAvailableSeats() - 1);
+    return this.driveTransportRepository.save(driveTransportEntity);
   }
 
   public List<DriveTransportEntity> findAllDriveTransportsByUserId(Long userId) {
@@ -68,5 +76,12 @@ public class DriveTransportService {
 
   public int countDriveTransports(Date date, Long userId) {
     return this.driveTransportRepository.countByTransportDateAndUserId(date, userId);
+  }
+
+  public DriveTransportEntity deleteById(Long id) throws NotFoundException {
+    DriveTransportEntity driveTransportEntity = this.findById(id);
+    this.driveTransportRepository.deleteById(id);
+
+    return driveTransportEntity;
   }
 }

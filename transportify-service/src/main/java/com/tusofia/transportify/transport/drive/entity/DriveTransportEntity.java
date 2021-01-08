@@ -1,7 +1,6 @@
 package com.tusofia.transportify.transport.drive.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.tusofia.transportify.transport.applicant.entity.ApplicantEntity;
 import com.tusofia.transportify.user.entity.User;
@@ -58,7 +57,7 @@ public class DriveTransportEntity {
   @OneToMany(mappedBy = "driveTransport", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private List<ApplicantEntity> applicants;
 
-  @ManyToOne(cascade = CascadeType.ALL)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", nullable = false)
   @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
   private User user;

@@ -32,10 +32,15 @@ public class ApplicantEntity {
   @Column(name = "CREATED_DATE")
   private Date startDate;
 
+  @Column(name = "DRIVE_TRANSPORT_ID", insertable = false, updatable = false)
+  private Long driveTransportId;
+
   @ManyToOne
   @JoinColumn(name = "rider_id")
-  @JsonIgnore
   private User rider;
+
+  @Column(name = "DRIVE_TRANSPORT_ID", updatable = false, insertable = false)
+  private Long driverTransportId;
 
   @ManyToOne
   @JoinColumn(name = "DRIVE_TRANSPORT_ID")

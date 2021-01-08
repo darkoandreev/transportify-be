@@ -41,6 +41,7 @@ public class User implements Serializable, UserDetails {
   private String username;
 
   @Column(name = "PASSWORD", nullable = false)
+
   @NotBlank(message = "Password is required")
   private String password;
 
@@ -63,27 +64,28 @@ public class User implements Serializable, UserDetails {
   @Column(name = "PHONE_NUMBER", unique = true)
   private String phoneNumber;
 
-  @Column(name = "ADDITIONA_DETAILS")
+  @Column(name = "ADDITIONAL_DETAILS")
   private String additionalDetails;
 
   @Column(name = "REGISTERED_ON")
   private LocalDateTime registeredOn;
 
-  @Column(name = "LAST_SEEN")
-  private LocalDateTime lastSeen;
-
   @Column(name = "IS_ENABLED", columnDefinition = "boolean default false")
   private boolean isEnabled;
+
+  private Long driveTransportCount;
+
+  private Long rideTransportCount;
 
   @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JsonIgnore
   private List<VehicleEntity> vehicles;
 
-  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   @JsonIgnore
   private List<RideTransportEntity> rideTransports;
 
-  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   @JsonIgnore
   private List<DriveTransportEntity> driveTransport;
 

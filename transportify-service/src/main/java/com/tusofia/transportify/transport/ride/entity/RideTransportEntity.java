@@ -23,16 +23,13 @@ public class RideTransportEntity {
   @Column(name = "CITY_TO")
   private String cityTo;
 
-  @Column(name = "NUMBER_OF_SEATS")
-  private Integer numberOfSeats;
-
   @Column(name = "TRANSPORT_DATE")
   private Date transportDate;
 
   @Column(name = "DISTANCE")
   private String distance;
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", nullable = false)
   @JsonIgnore
   private User user;

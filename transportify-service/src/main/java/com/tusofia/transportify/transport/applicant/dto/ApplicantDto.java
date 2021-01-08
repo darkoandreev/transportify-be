@@ -13,7 +13,4 @@ public class ApplicantDto {
 
   @NotNull
   private Long driveTransportId;
-
-  @NotNull
-  private Long riderId;
 }

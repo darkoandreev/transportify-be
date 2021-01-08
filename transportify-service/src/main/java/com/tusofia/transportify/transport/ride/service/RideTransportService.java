@@ -9,11 +9,13 @@ import com.tusofia.transportify.transport.validation.ValidationService;
 import com.tusofia.transportify.user.entity.User;
 import com.tusofia.transportify.user.service.UserService;
 import com.tusofia.transportify.util.CustomMapper;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RideTransportService {
@@ -51,5 +53,16 @@ public class RideTransportService {
 
   public List<RideTransportEntity> getAllByUserId(Long userId) {
     return this.rideTransportRepository.findAllByUserId(userId);
+  }
+
+  public RideTransportEntity findById(Long id) throws NotFoundException {
+    return this.rideTransportRepository.findById(id).orElseThrow(() -> new NotFoundException("Ride transport not found"));
+  }
+
+  public RideTransportEntity deleteById(Long id) throws NotFoundException {
+    RideTransportEntity rideTransportEntity = this.findById(id);
+    this.rideTransportRepository.deleteById(id);
+
+    return rideTransportEntity;
   }
 }

@@ -9,5 +9,5 @@ import java.util.List;
 public interface IDriveTransportRepository extends JpaRepository<DriveTransportEntity, Long> {
   List<DriveTransportEntity> findAllByUserId(Long userId);
   int countByTransportDateAndUserId(Date startDate, Long userId);
-  List<DriveTransportEntity> findAllByCityFromAndCityToAndTransportDate(String cityFrom, String cityTo, Date transportDate);
+  List<DriveTransportEntity> findAllByCityFromAndCityToAndTransportDateAndAvailableSeatsGreaterThanEqual(String cityFrom, String cityTo, Date transportDate, Integer availableSeats);
 }

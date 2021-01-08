@@ -19,9 +19,6 @@ public class RideTransportDto {
   private String cityTo;
 
   @NotNull
-  private Integer numberOfSeats;
-
-  @NotNull
   private Date transportDate;
 
   private String distance;

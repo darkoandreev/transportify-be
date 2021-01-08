@@ -1,6 +1,7 @@
 package com.tusofia.transportify.transport.exception;
 
 import com.tusofia.transportify.error.ApiError;
+import com.tusofia.transportify.transport.applicant.exception.AlreadyAppliedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -11,6 +12,11 @@ public class TransportExceptionHandlerAdvice {
 
   @ExceptionHandler(TransportAlreadyExists.class)
   public ResponseEntity<Object> handleTransportAlreadyExistsException(TransportAlreadyExists ex) {
+    return this.buildResponseEntity(new ApiError(HttpStatus.BAD_REQUEST, ex.getMessage(), ex));
+  }
+
+  @ExceptionHandler(AlreadyAppliedException.class)
+  public ResponseEntity<Object> handleAlreadyAppliedException(AlreadyAppliedException ex) {
     return this.buildResponseEntity(new ApiError(HttpStatus.BAD_REQUEST, ex.getMessage(), ex));
   }
 

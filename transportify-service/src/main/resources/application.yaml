@@ -18,3 +18,5 @@ spring:
           writetimeout: 5000
     username: andreev.darko@gmail.com
     password: volimsexzadzabe
+  jpa:
+    show-sql: true

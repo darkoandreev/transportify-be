@@ -42,4 +42,9 @@ public class UserController {
   public ResponseEntity<User> getUserByUsername(@RequestParam String username) {
     return new ResponseEntity<>(this.userService.findUserByUsername(username), HttpStatus.OK);
   }
+
+  @GetMapping("user-profile")
+  public ResponseEntity<User> getUserProfileDetails(@RequestParam String username) {
+    return new ResponseEntity<>(this.userService.getUserProfileDetails(username), HttpStatus.OK);
+  }
 }

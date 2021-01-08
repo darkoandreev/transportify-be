@@ -94,6 +94,10 @@ public class UserService implements UserDetailsService {
     return applicationUser.get();
   }
 
+  public User getUserProfileDetails(String username) {
+    return this.userRepository.getUserProfileDetailsByUsername(username);
+  }
+
   @Override
   public UserDetails loadUserByUsername(String username) {
     Optional<User> applicationUser = this.userRepository.findByUsername(username);
