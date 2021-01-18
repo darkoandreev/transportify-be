@@ -50,7 +50,7 @@ public class DriveTransportEntity {
   @Column(name = "DISTANCE")
   private String distance;
 
-  @ManyToOne(cascade = CascadeType.ALL)
+  @ManyToOne()
   @JoinColumn(name = "VEHICLE_ID", referencedColumnName = "VEHICLE_ID")
   private VehicleEntity vehicle;
 

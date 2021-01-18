@@ -10,4 +10,5 @@ public interface IDriveTransportRepository extends JpaRepository<DriveTransportE
   List<DriveTransportEntity> findAllByUserId(Long userId);
   int countByTransportDateAndUserId(Date startDate, Long userId);
   List<DriveTransportEntity> findAllByCityFromAndCityToAndTransportDateAndAvailableSeatsGreaterThanEqual(String cityFrom, String cityTo, Date transportDate, Integer availableSeats);
+  List<DriveTransportEntity> findAllByTransportDateBefore(Date today);
 }

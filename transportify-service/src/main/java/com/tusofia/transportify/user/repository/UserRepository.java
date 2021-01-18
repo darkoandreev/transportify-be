@@ -11,10 +11,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
   boolean existsByUsername(String username);
   Optional<User> findByUsername(String username);
 
+  // COUNT(DISTINCT D.DRIVE_TRANSPORT_ID) AS DRIVE_TRANSPORT_COUNT, COUNT(DISTINCT R.Id) AS RIDE_TRANSPORT_COUNT,
   @Query(
           value = "SELECT U.USER_ID, U.FIRST_NAME, U.LAST_NAME, U.ADDITIONAL_DETAILS, U.DATE_OF_BIRTH, " +
                   "U.EMAIL, U.FIRST_NAME, U.GENDER, U.IMAGE_URL, U.IS_ENABLED, U.LAST_NAME, U.PHONE_NUMBER, U.REGISTERED_ON, U.USERNAME, U.PASSWORD, " +
-                  "COUNT(DISTINCT D.DRIVE_TRANSPORT_ID) AS DRIVE_TRANSPORT_COUNT, COUNT(DISTINCT R.Id) AS RIDE_TRANSPORT_COUNT " +
+                  "U.TOKEN_ID " +
                   "FROM USER U " +
                   "LEFT JOIN DRIVE_TRANSPORT D ON D.USER_ID = U.USER_ID " +
                   "LEFT JOIN RIDE_TRANSPORT R ON R.USER_ID = U.USER_ID " +

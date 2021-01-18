@@ -59,7 +59,7 @@ public class DriveTransportService {
             .findAllByCityFromAndCityToAndTransportDateAndAvailableSeatsGreaterThanEqual(params.getCityFrom(), params.getCityTo(), params.getTransportDate(), 1);
   }
 
-  public DriveTransportEntity reduceAvailableSeats(Long driveTransportId) throws NotFoundException {
+  public DriveTransportEntity changeAvailableSeats(Long driveTransportId) throws NotFoundException {
     DriveTransportEntity driveTransportEntity = this.findById(driveTransportId);
     driveTransportEntity.setAvailableSeats(driveTransportEntity.getAvailableSeats() - 1);
     return this.driveTransportRepository.save(driveTransportEntity);
@@ -83,5 +83,9 @@ public class DriveTransportService {
     this.driveTransportRepository.deleteById(id);
 
     return driveTransportEntity;
+  }
+
+  public List<DriveTransportEntity> getAllBeforeTodayDate() {
+    return this.driveTransportRepository.findAllByTransportDateBefore(new Date());
   }
 }

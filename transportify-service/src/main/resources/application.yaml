@@ -1,9 +1,29 @@
 spring:
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 100MB
+      max-request-size: 120MB
   application:
-    name: transportify-service
-  cloud:
-    config:
-      uri: http://localhost:8888
+    name: transportify-app
+  datasource:
+    url: jdbc:mysql://localhost:3306/transpotify_db
+    username: root
+    password: dakibot123
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 100
+        format_sql: true
+        generate_statistics: false
+        order_inserts: true
+        order_updates: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
   mail:
     host: smtp.gmail.com
     port: 587
@@ -18,5 +38,18 @@ spring:
           writetimeout: 5000
     username: andreev.darko@gmail.com
     password: volimsexzadzabe
-  jpa:
-    show-sql: true
+
+authentication:
+  tokenSecret: P34en@k0ko6K@DimC@ribr0DTuS0fi@S3crEtPr0v@lA0Bl@kaP34en@k0ko6K@DimC@ribr0D@S3crEtPr0v@lA0
+  tokenExpirationInMs: 3600000
+  accessTokenCookieName: accessToken
+
+firebase:
+  configuration:
+    filePath: "classpath:fcm/transportify-c72a4-firebase-adminsdk-mrihz-0533bcd878.json"
+
+file:
+  upload-dir: /Users/darkoandreev/Desktop/master-degree-tu-sofia/transportify-service/upload-files
+
+quartz:
+  enabled: true

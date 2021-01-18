@@ -18,7 +18,7 @@ public class UserController {
   @Autowired
   private UserService userService;
 
-  @GetMapping("/{userId}")
+  @GetMapping()
   public User getUser(@RequestHeader("userId") Long userId) {
     return this.userService.findUserById(userId);
   }

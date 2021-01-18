@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -35,17 +36,12 @@ public class UserService implements UserDetailsService {
   @Autowired
   private ConfirmationTokenService confirmationTokenService;
 
-  @Bean
-  public PasswordEncoder bCryptPasswordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
-
   public User registerUser(User user) throws UserAlreadyExistException {
     if (this.userRepository.existsByUsername(user.getUsername())) {
       throw new UserAlreadyExistException("User already exists!");
     }
 
-    user.setRegisteredOn(LocalDateTime.now());
+    user.setRegisteredOn(new Date());
 
     user.setPassword(this.passwordEncoder.encode(user.getPassword()));
     User savedUser = this.userRepository.save(user);
@@ -96,6 +92,13 @@ public class UserService implements UserDetailsService {
 
   public User getUserProfileDetails(String username) {
     return this.userRepository.getUserProfileDetailsByUsername(username);
+  }
+
+  public void updateCurrentRating(Integer rating, Long userId) {
+    User user = this.findUserById(userId);
+    user.setCurrentRating(rating);
+
+    this.userRepository.save(user);
   }
 
   @Override

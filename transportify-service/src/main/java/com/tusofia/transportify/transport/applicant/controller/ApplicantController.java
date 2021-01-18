@@ -26,7 +26,7 @@ public class ApplicantController {
   }
 
   @PatchMapping("/status/{applicantId}")
-  public ResponseEntity<ApplicantEntity> updateApplicantStatus(@RequestBody ApplicantDto applicantDto, @PathVariable Long applicantId) {
+  public ResponseEntity<ApplicantEntity> updateApplicantStatus(@RequestBody ApplicantDto applicantDto, @PathVariable Long applicantId) throws NotFoundException {
     return new ResponseEntity<>(this.applicantService.updateApplicantStatus(applicantDto.getApplicantStatus(), applicantId), HttpStatus.OK);
   }
 

@@ -1,23 +1,27 @@
 package com.tusofia.transportify.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.tusofia.transportify.fcm.entity.PushNotificationTokenEntity;
+import com.tusofia.transportify.mynotifications.entity.MyNotifications;
 import com.tusofia.transportify.transport.applicant.entity.ApplicantEntity;
 import com.tusofia.transportify.transport.drive.entity.DriveTransportEntity;
+import com.tusofia.transportify.transport.history.entity.TransportHistory;
 import com.tusofia.transportify.transport.ride.entity.RideTransportEntity;
 import com.tusofia.transportify.vehicle.entity.VehicleEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
-import java.sql.Date;
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -41,8 +45,8 @@ public class User implements Serializable, UserDetails {
   private String username;
 
   @Column(name = "PASSWORD", nullable = false)
-
   @NotBlank(message = "Password is required")
+  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   private String password;
 
   @Column(name = "FIRST_NAME")
@@ -67,8 +71,12 @@ public class User implements Serializable, UserDetails {
   @Column(name = "ADDITIONAL_DETAILS")
   private String additionalDetails;
 
+  @Column(name = "CURRENT_RATING")
+  private Integer currentRating;
+
   @Column(name = "REGISTERED_ON")
-  private LocalDateTime registeredOn;
+  @CreationTimestamp
+  private Date registeredOn;
 
   @Column(name = "IS_ENABLED", columnDefinition = "boolean default false")
   private boolean isEnabled;
@@ -89,11 +97,24 @@ public class User implements Serializable, UserDetails {
   @JsonIgnore
   private List<DriveTransportEntity> driveTransport;
 
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonIgnore
+  private List<TransportHistory> transportHistories;
+
   @OneToMany(mappedBy = "rider", cascade = CascadeType.ALL)
   @JsonIgnore
   private List<ApplicantEntity> riderApplicants;
 
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+  @JsonIgnore
+  private List<MyNotifications> myNotifications;
+
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "TOKEN_ID", referencedColumnName = "TOKEN_ID")
+  private PushNotificationTokenEntity pushNotificationToken;
+
   @Override
+  @JsonIgnore
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return Collections.emptyList();
   }
@@ -104,16 +125,19 @@ public class User implements Serializable, UserDetails {
   }
 
   @Override
+  @JsonIgnore
   public boolean isAccountNonExpired() {
     return true;
   }
 
   @Override
+  @JsonIgnore
   public boolean isAccountNonLocked() {
     return true;
   }
 
   @Override
+  @JsonIgnore
   public boolean isCredentialsNonExpired() {
     return true;
   }

@@ -43,6 +43,11 @@ public class ExceptionHandlerAdvice {
     return buildResponseEntity(new ApiError(HttpStatus.BAD_REQUEST, ex.getMessage(), ex));
   }
 
+  @ExceptionHandler(UserRatingException.class)
+  public ResponseEntity<Object> handleUserRatingException(UserRatingException ex) {
+    return buildResponseEntity(new ApiError(HttpStatus.BAD_REQUEST, ex.getMessage(), ex));
+  }
+
   private ResponseEntity<Object> buildResponseEntity(ApiError apiError) {
     return new ResponseEntity<>(apiError, apiError.getStatus());
   }
