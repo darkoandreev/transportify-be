@@ -9,4 +9,5 @@ import java.util.List;
 public interface IRideTransportRepository extends JpaRepository<RideTransportEntity, Long> {
   List<RideTransportEntity> findAllByUserId(Long userId);
   int countByTransportDateAndUserId(Date startDate, Long userId);
+  List<RideTransportEntity> findAllByTransportDateBefore(Date date);
 }

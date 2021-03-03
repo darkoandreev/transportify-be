@@ -35,9 +35,6 @@ public class TransportHistoryDriveDetails {
   @Column(name = "ADDITIONAL_DETAILS")
   private String additionalDetails;
 
-  @Column(name = "DISTANCE")
-  private String distance;
-
   @OneToOne
   @MapsId
   @JoinColumn(name = "TRANSPORT_HISTORY_ID")

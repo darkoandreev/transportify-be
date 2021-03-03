@@ -16,7 +16,7 @@ public class PushNotificationController {
   public ResponseEntity<Void> persist(
           @RequestBody PushNotificationTokenEntity pushNotificationTokenEntity,
           @RequestHeader Long userId) {
-    this.pushNotificationService.persist(pushNotificationTokenEntity, userId);
+    this.pushNotificationService.persistToken(pushNotificationTokenEntity, userId);
     return ResponseEntity.ok().build();
   }
 }

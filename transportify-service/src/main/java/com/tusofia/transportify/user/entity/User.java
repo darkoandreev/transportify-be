@@ -3,7 +3,7 @@ package com.tusofia.transportify.user.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tusofia.transportify.fcm.entity.PushNotificationTokenEntity;
-import com.tusofia.transportify.mynotifications.entity.MyNotifications;
+import com.tusofia.transportify.mynotifications.entity.MyNotificationEntity;
 import com.tusofia.transportify.transport.applicant.entity.ApplicantEntity;
 import com.tusofia.transportify.transport.drive.entity.DriveTransportEntity;
 import com.tusofia.transportify.transport.history.entity.TransportHistory;
@@ -107,7 +107,7 @@ public class User implements Serializable, UserDetails {
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
   @JsonIgnore
-  private List<MyNotifications> myNotifications;
+  private List<MyNotificationEntity> myNotifications;
 
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "TOKEN_ID", referencedColumnName = "TOKEN_ID")

@@ -1,7 +1,6 @@
 package com.tusofia.transportify.transport.ride.service;
 
 import com.tusofia.transportify.google.distance.IDistanceService;
-import com.tusofia.transportify.transport.exception.TransportAlreadyExists;
 import com.tusofia.transportify.transport.ride.dto.RideTransportDto;
 import com.tusofia.transportify.transport.ride.entity.RideTransportEntity;
 import com.tusofia.transportify.transport.ride.repository.IRideTransportRepository;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class RideTransportService {
@@ -64,5 +62,9 @@ public class RideTransportService {
     this.rideTransportRepository.deleteById(id);
 
     return rideTransportEntity;
+  }
+
+  public List<RideTransportEntity> getAllBeforeTodayDate() {
+    return this.rideTransportRepository.findAllByTransportDateBefore(new Date());
   }
 }

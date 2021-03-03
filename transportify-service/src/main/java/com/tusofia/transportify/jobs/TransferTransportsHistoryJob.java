@@ -5,7 +5,9 @@ import com.tusofia.transportify.transport.drive.service.DriveTransportService;
 import com.tusofia.transportify.transport.history.entity.TransportHistory;
 import com.tusofia.transportify.transport.history.entity.TransportHistoryDriveDetails;
 import com.tusofia.transportify.transport.history.service.TransportHistoryService;
+import com.tusofia.transportify.transport.ride.entity.RideTransportEntity;
 import com.tusofia.transportify.transport.ride.service.RideTransportService;
+import com.tusofia.transportify.user.entity.User;
 import javassist.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.DisallowConcurrentExecution;
@@ -14,6 +16,7 @@ import org.quartz.JobExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.sql.Date;
 import java.util.List;
 
 @Component
@@ -33,23 +36,17 @@ public class TransferTransportsHistoryJob implements Job {
   public void execute(JobExecutionContext context) {
     log.info("job executed");
     List<DriveTransportEntity> driveTransportEntities = this.driveTransportService.getAllBeforeTodayDate();
+    List<RideTransportEntity> rideTransportEntities = this.rideTransportService.getAllBeforeTodayDate();
 
     driveTransportEntities
             .forEach(entity -> {
               if (entity != null) {
-                TransportHistory transportHistory = TransportHistory.builder()
-                        .cityFrom(entity.getCityFrom())
-                        .cityTo(entity.getCityTo())
-                        .transportDate(entity.getTransportDate())
-                        .isDrive(true)
-                        .user(entity.getUser())
-                        .build();
+                TransportHistory transportHistory = this.buildTransportHistory(entity.getCityFrom(), entity.getCityTo(), entity.getDistance(), entity.getTransportDate(), entity.getUser(), true);
                 TransportHistoryDriveDetails transportHistoryDriveDetails = TransportHistoryDriveDetails.builder()
                         .additionalDetails(entity.getAdditionalDetails())
                         .transportTime(entity.getTransportTime())
                         .availableSeats(entity.getAvailableSeats())
                         .transportPrice(entity.getTransportPrice())
-                        .distance(entity.getDistance())
                         .build();
                 transportHistoryDriveDetails.setTransportHistory(transportHistory);
                 transportHistory.setTransportHistoryDriveDetails(transportHistoryDriveDetails);
@@ -61,5 +58,30 @@ public class TransferTransportsHistoryJob implements Job {
                 }
               }
             });
+
+    rideTransportEntities
+            .forEach(entity -> {
+              if (entity != null) {
+                TransportHistory transportHistory = this.buildTransportHistory(entity.getCityFrom(), entity.getCityTo(), entity.getDistance(), entity.getTransportDate(), entity.getUser(), false);
+                this.transportHistoryService.persist(transportHistory);
+
+                try {
+                  this.rideTransportService.deleteById(entity.getId());
+                } catch (NotFoundException e) {
+                  log.error("Error while deleting ride transports: {}", e.getMessage());
+                }
+              }
+            });
+  }
+
+  private TransportHistory buildTransportHistory(String cityFrom, String cityTo, String distance, Date transportDate, User user, boolean isDrive) {
+    return TransportHistory.builder()
+            .cityFrom(cityFrom)
+            .cityTo(cityTo)
+            .distance(distance)
+            .transportDate(transportDate)
+            .isDrive(isDrive)
+            .user(user)
+            .build();
   }
 }

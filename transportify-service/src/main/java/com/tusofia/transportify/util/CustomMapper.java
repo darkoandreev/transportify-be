@@ -1,5 +1,7 @@
 package com.tusofia.transportify.util;
 
+import com.tusofia.transportify.mynotifications.dto.MyNotificationDto;
+import com.tusofia.transportify.mynotifications.entity.MyNotificationEntity;
 import com.tusofia.transportify.transport.applicant.dto.ApplicantDto;
 import com.tusofia.transportify.transport.applicant.entity.ApplicantEntity;
 import com.tusofia.transportify.transport.drive.dto.DriveTransportDto;
@@ -25,4 +27,5 @@ public interface CustomMapper {
   DriveTransportEntity toDriveTransportEntity(DriveTransportDto driveTransportDto);
   ApplicantEntity toApplicantEntity(ApplicantDto applicantDto);
   UserRating toUserRatingEntity(UserRatingDto userRatingDto);
+  MyNotificationEntity toMyNotificationEntity(MyNotificationDto myNotificationDto);
 }

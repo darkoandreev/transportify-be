@@ -1,6 +1,5 @@
 package com.tusofia.transportify.transport.history.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.tusofia.transportify.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,8 +30,11 @@ public class TransportHistory {
   @Column(name = "TRANSPORT_DATE")
   private Date transportDate;
 
-  @Column(name = "IS_DRVE")
+  @Column(name = "IS_DRIVE")
   private boolean isDrive;
+
+  @Column(name = "DISTANCE")
+  private String distance;
 
   @ManyToOne
   @JoinColumn(name = "USER_ID", nullable = false)

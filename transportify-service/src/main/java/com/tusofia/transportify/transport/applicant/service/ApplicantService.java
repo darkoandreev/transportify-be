@@ -56,7 +56,11 @@ public class ApplicantService {
     applicantEntity.setRider(riderUser);
 
     Map<String, String> data = Map.of("returnUrl", String.format("tabs/transports/drive-transport/%s", driveTransportEntity.getId()), "type", NotificationTypeEnum.APPLY_FOR_DRIVE.getValue());
-    this.pushNotificationService.sendPushNotification(driveTransportEntity.getUser().getId(), "New passenger", String.format("%s wants to ride with you.", riderUser.getUsername()), data);
+    this.pushNotificationService.sendPushNotification(
+            driveTransportEntity.getUser().getId(),
+            "New passenger",
+            String.format("%s wants to ride with you to %s on %s.", riderUser.getUsername(), driveTransportEntity.getCityTo(), driveTransportEntity.getTransportDate().toString()),
+            data);
 
     return this.applicantRepository.save(applicantEntity);
   }
@@ -72,7 +76,12 @@ public class ApplicantService {
     applicantEntity.setApplicantStatus(applicantStatusEnum);
     if (applicantStatusEnum == ApplicantStatusEnum.ACCEPTED || applicantStatusEnum == ApplicantStatusEnum.REJECTED) {
       String message = applicantStatusEnum == ApplicantStatusEnum.ACCEPTED ? "You are accepted! Click to see the ride." : "You're rejected! Please find another ride.";
-      Map<String, String> data = Map.of("returnUrl", "/tabs/transports/results/9", "type", NotificationTypeEnum.CHANGE_APPLICANT_STATUS.getValue());
+      Map<String, String> data = Map.of(
+              "returnUrl",
+              String.format("/tabs/transports/drive-transport/%s",
+                      applicantEntity.getDriveTransport().getId()),
+              "type",
+              NotificationTypeEnum.CHANGE_APPLICANT_STATUS.getValue());
       this.pushNotificationService.sendPushNotification(applicantEntity.getRider().getId(), "Ride status changed", message, data);
     }
     return this.applicantRepository.save(applicantEntity);
