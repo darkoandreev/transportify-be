@@ -41,6 +41,7 @@ public class UserService implements UserDetailsService {
       throw new UserAlreadyExistException("User already exists!");
     }
 
+
     user.setRegisteredOn(new Date());
 
     user.setPassword(this.passwordEncoder.encode(user.getPassword()));

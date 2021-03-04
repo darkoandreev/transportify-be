@@ -46,7 +46,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .formLogin().disable()
             .httpBasic().disable()
                 .authorizeRequests()
-                .antMatchers("/api/user/signup", "/api/user/confirm-account").permitAll()
+                .antMatchers("/api/user/signup", "/api/user/confirm-account", "/transport-chat-socket/*").permitAll()
                 .anyRequest().authenticated()
             .and()
                 .sessionManagement()
@@ -64,7 +64,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        List<String> allowOrigins = Arrays.asList("http://192.168.0.111:8100", "http://localhost:8100", "http://localhost");
+        List<String> allowOrigins = Arrays.asList("http://192.168.0.101:8100", "http://localhost:8100", "http://localhost");
         configuration.setAllowedOrigins(allowOrigins);
         configuration.setAllowedMethods(Collections.singletonList("*"));
         configuration.setAllowedHeaders(Collections.singletonList("*"));

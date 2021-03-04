@@ -2,6 +2,7 @@ package com.tusofia.transportify.transport.drive.service;
 
 import com.tusofia.transportify.google.distance.DistanceService;
 import com.tusofia.transportify.transport.applicant.dto.ApplicantDto;
+import com.tusofia.transportify.transport.applicant.entity.ApplicantStatusEnum;
 import com.tusofia.transportify.transport.drive.dto.DriveTransportDto;
 import com.tusofia.transportify.transport.drive.entity.DriveTransportEntity;
 import com.tusofia.transportify.transport.drive.repository.IDriveTransportRepository;
@@ -59,9 +60,12 @@ public class DriveTransportService {
             .findAllByCityFromAndCityToAndTransportDateAndAvailableSeatsGreaterThanEqual(params.getCityFrom(), params.getCityTo(), params.getTransportDate(), 1);
   }
 
-  public DriveTransportEntity changeAvailableSeats(Long driveTransportId) throws NotFoundException {
+  public DriveTransportEntity changeAvailableSeats(Long driveTransportId, ApplicantStatusEnum applicantStatusEnum) throws NotFoundException {
     DriveTransportEntity driveTransportEntity = this.findById(driveTransportId);
-    driveTransportEntity.setAvailableSeats(driveTransportEntity.getAvailableSeats() - 1);
+
+    int availableSeats = applicantStatusEnum == ApplicantStatusEnum.ACCEPTED ? driveTransportEntity.getAvailableSeats() - 1 : driveTransportEntity.getAvailableSeats() + 1;
+
+    driveTransportEntity.setAvailableSeats(availableSeats);
     return this.driveTransportRepository.save(driveTransportEntity);
   }
 

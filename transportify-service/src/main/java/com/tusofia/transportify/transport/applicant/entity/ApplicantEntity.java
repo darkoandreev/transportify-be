@@ -38,9 +38,6 @@ public class ApplicantEntity {
   @JoinColumn(name = "rider_id")
   private User rider;
 
-  @Column(name = "DRIVE_TRANSPORT_ID", updatable = false, insertable = false)
-  private Long driverTransportId;
-
   @ManyToOne
   @JoinColumn(name = "DRIVE_TRANSPORT_ID")
   @JsonIgnore

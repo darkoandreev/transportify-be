@@ -52,7 +52,6 @@ public class ApplicantService {
 
     applicantEntity = this.customMapper.toApplicantEntity(applicantDto);
     applicantEntity.setDriveTransport(driveTransportEntity);
-    applicantEntity.setDriverTransportId(driveTransportEntity.getUser().getId());
     applicantEntity.setRider(riderUser);
 
     Map<String, String> data = Map.of("returnUrl", String.format("tabs/transports/drive-transport/%s", driveTransportEntity.getId()), "type", NotificationTypeEnum.APPLY_FOR_DRIVE.getValue());
@@ -68,23 +67,34 @@ public class ApplicantService {
   public ApplicantEntity updateApplicantStatus(ApplicantStatusEnum applicantStatusEnum, Long applicantId) throws NotFoundException {
     ApplicantEntity applicantEntity = this.applicantRepository.findById(applicantId).orElseThrow();
 
-  if (applicantStatusEnum == ApplicantStatusEnum.ACCEPTED) {
-      DriveTransportEntity driveTransportEntity = this.driveTransportService.changeAvailableSeats(applicantEntity.getDriveTransportId());
+  if (applicantStatusEnum != ApplicantStatusEnum.PENDING) {
+      DriveTransportEntity driveTransportEntity = this.driveTransportService.changeAvailableSeats(applicantEntity.getDriveTransportId(), applicantStatusEnum);
       applicantEntity.setDriveTransport(driveTransportEntity);
     }
 
     applicantEntity.setApplicantStatus(applicantStatusEnum);
     if (applicantStatusEnum == ApplicantStatusEnum.ACCEPTED || applicantStatusEnum == ApplicantStatusEnum.REJECTED) {
       String message = applicantStatusEnum == ApplicantStatusEnum.ACCEPTED ? "You are accepted! Click to see the ride." : "You're rejected! Please find another ride.";
-      Map<String, String> data = Map.of(
-              "returnUrl",
-              String.format("/tabs/transports/drive-transport/%s",
-                      applicantEntity.getDriveTransport().getId()),
-              "type",
-              NotificationTypeEnum.CHANGE_APPLICANT_STATUS.getValue());
+      Map<String, String> data = getApplicantStatusNotificationData(applicantEntity);
       this.pushNotificationService.sendPushNotification(applicantEntity.getRider().getId(), "Ride status changed", message, data);
+    }
+
+    if (applicantStatusEnum == ApplicantStatusEnum.CANCELED) {
+      DriveTransportEntity driveTransportEntity = this.driveTransportService.findById(applicantEntity.getDriveTransportId());
+      System.out.println(driveTransportEntity.getUser().getId());
+      Map<String, String> data = getApplicantStatusNotificationData(applicantEntity);
+      String message = String.format("%s canceled the ride and can't ride with you!", applicantEntity.getRider().getUsername());
+      this.pushNotificationService.sendPushNotification(driveTransportEntity.getUser().getId(), "Ride status changed", message , data);
     }
     return this.applicantRepository.save(applicantEntity);
   }
 
+  private Map<String, String> getApplicantStatusNotificationData(ApplicantEntity applicantEntity) {
+    return Map.of(
+            "returnUrl",
+            String.format("/tabs/transports/drive-transport/%s",
+                    applicantEntity.getDriveTransport().getId()),
+            "type",
+            NotificationTypeEnum.CHANGE_APPLICANT_STATUS.getValue());
+  }
 }

@@ -26,7 +26,7 @@ public class EmailService {
     simpleMailMessage.setSubject("Complete Registration!");
     simpleMailMessage.setFrom("andreev.darko@gmail.com");
     simpleMailMessage.setText("To confirm your account, please click here : "
-            +"http://localhost:8080/api/user/confirm-account?token=" + confirmationToken);
+            +"http://192.168.0.101:8100/auth/confirm-account?CONFIRMATION_TOKEN_KEY=" + confirmationToken);
 
     return simpleMailMessage;
   }
